@@ -2,30 +2,31 @@
 
 ## Introduction
 
-The aim of this document is to highlight parts of the ECMA-262 specification which use different notations (ie. syntaxes) to specify the exact same semantics. In addition, I suggest solutions to address those issues, so as to improve the overall quality of the ECMA-262 specification in terms of consistency.
+The purpose of this document is to highlight parts of the ECMA-262 specification that use inconsistent notations (i.e., syntaxes) to express the same semantics. Additionally, I propose solutions to address these issues to improve the overall consistency and quality of the ECMA-262 specification.
 
-We refer to the specification available at https://tc39.es/ecma262, as of 28th June 2025.
+This document refers to the specification available at https://tc39.es/ecma262, as of June 28, 2025.
 
-The rest of this document is structured into sections, each one describing a list of notations used to express the same semantics. For each notation, I provide the number of occurrences in the corpus, the regular expression used to find those occurrences, and some examples of the occurrence in the specification. Lastly, I suggest a suitable solution to address the issue.
+The rest of this document is structured into sections, each describing a set of notations used to express the same semantics. For each notation, I provide the number of occurrences in the corpus, the regular expression used to identify those occurrences, and examples from the specification. Finally, I suggest a suitable solution to address the issue.
 
-## Object field references
+## Object Field References
 
-### Description of the issue
+### Description of the Issue
 
-Referencing a field of an object is specified using different notations:
+Referencing a field of an object is expressed using different notations:
+
 1. `the value of _ref_.[[Property]]`
-    - occurrences: 3
-    - regex: `1\..*the value of _.*_\..*`
-    - references:
+    - **occurrences**: 3
+    - **regex**: `1\..*the value of _.*_\..*`
+    - **references**:
         - InitializeInstanceElements ([link](https://tc39.es/ecma262/#sec-initializeinstanceelements))
             - `Let _methods_ be the value of _constructor_.[[PrivateMethods]].`
             - `Let _fields_ be the value of _constructor_.[[Fields]].`
         - Function.prototype.toString ([link](https://tc39.es/ecma262/#sec-function.prototype.tostring))
             - `If _func_ is a <emu-xref href="#sec-built-in-function-objects">built-in function object</emu-xref>, return an implementation-defined String source code representation of _func_. The representation must have the syntax of a |NativeFunction|. Additionally, if _func_ has an [[InitialName]] internal slot and _func_.[[InitialName]] is a String, the portion of the returned String that would be matched by |NativeFunctionAccessor?| |PropertyName| must be the value of _func_.[[InitialName]].`
 2. `the value of _ref_'s [[Property]] attribute`
-    - occurrences: 6
-    - regex: `1\..*the value of.*'s .* attribute.*`
-    - references:
+    - **occurrences**: 6
+    - **regex**: `1\..*the value of.*'s .* attribute.*`
+    - **references**:
         - OrdinaryGetOwnProperty ([link](https://tc39.es/ecma262/#sec-ordinarygetownproperty))
             - `Set _D_.[[Value]] to the value of _X_'s [[Value]] attribute.`
             - `Set _D_.[[Writable]] to the value of _X_'s [[Writable]] attribute.`
@@ -34,65 +35,66 @@ Referencing a field of an object is specified using different notations:
             - `Set _D_.[[Enumerable]] to the value of _X_'s [[Enumerable]] attribute.`
             - `Set _D_.[[Configurable]] to the value of _X_'s [[Configurable]] attribute.`
 3. `_ref_'s [[Property]] value`
-    - occurrences: 2
-    - regex: `1\..*'s [^\s]+ value.*`
-    - references:
+    - **occurrences**: 2
+    - **regex**: `1\..*'s [^\s]+ value.*`
+    - **references**:
         - SetFunctionName ([link](https://tc39.es/ecma262/#sec-setfunctionname))
             - `Let _description_ be _name_'s [[Description]] value.`
         - SymbolDescriptiveString ([link](https://tc39.es/ecma262/#sec-symboldescriptivestring))
             - `Let _desc_ be _sym_'s [[Description]] value.`
 4. `_ref_.[[Property]]` 
-    - occurrences: 1775 
-    - regex: `1\..*_.*_\.[^s]+.*`
-    - references (examples, non-exhaustive list):
+    - **occurrences**: 1775 
+    - **regex**: `1\..*_.*_\.[^s]+.*`
+    - **references (examples, non-exhaustive list)**:
         - SetFunctionName ([link](https://tc39.es/ecma262/#sec-setfunctionname))
             - `Set _name_ to _name_.[[Description]].`
             - `Set _F_.[[InitialName]] to _name_.`
             - `Optionally, set _F_.[[InitialName]] to _name_.`
 
-As all notations imply the same semantics, I suggest to update the specification so that only notation 4 is used.
+Since all notations imply the same semantics, I suggest updating the specification to use only notation 4.
 
-| Notation | Current                                                                 | To be                                 |
+| Notation | Current                                                                 | Suggested                                 |
 |----------|-------------------------------------------------------------------------|---------------------------------------|
 | 1        | Let _methods_ be the value of _constructor_.[[PrivateMethods]].         | Let _methods_ be _constructor_.[[PrivateMethods]]. |
 | 2        | Set _D_.[[Value]] to the value of _X_'s [[Value]] attribute.            | Set _D_.[[Value]] to _X_.[[Value]].   |
 | 3        | Let _description_ be _name_'s [[Description]] value.                    | Let _description_ be _name_.[[Description]]. |
 
-## If-then-else Steps with single if/else Step
+## If-Then-Else Steps with Single If/Else Step
 
-### Description of the issue
+### Description of the Issue
 
-Conditional steps including a non-empty else step, for which neither then nor else steps are blocks, are specified using different notations. Notice also that in notation 2 the `otherwise` keyword is occasionally followed by a comma:
 
-1. If, else in the same step ("else" keyword), with optional else-if: 
+Conditional steps that include a non-empty else step, where neither the then nor else steps are blocks, are expressed using different notations. Additionally, in notation 2, the `otherwise` keyword is sometimes followed by a comma.
+
+1. **If-Else in the Same Step ("else" keyword), with Optional Else-If:**
     - `If cond, thenStep[; else if otherCond, otherThenStep]*; else elseStep`
-        - occurrences: 67
-        - regex: `1\..*[iI]f .*, .*(; else if .*, .*)*; else .*`
-        - references (examples, non-exhaustive list):
+        - **occurrences**: 67
+        - **regex**: `1\..*[iI]f .*, .*(; else if .*, .*)*; else .*`
+        - **references (examples, non-exhaustive list):**
             - ValidateAndApplyPropertyDescriptor ([link](https://tc39.es/ecma262/#sec-validateandapplypropertydescriptor))
                 - `If _Desc_ has a [[Configurable]] field, let _configurable_ be _Desc_.[[Configurable]]; else let _configurable_ be _current_.[[Configurable]].`
-2. If, else in the same step ("otherwise" keyword):
+2. **If-Else in the Same Step ("otherwise" keyword):**
     
     a. `If cond, thenStep; otherwise elseStep`
-    - occurrences: 31
-    - regex: `1\..*If .*, .*; otherwise .*`
-    - references (examples, non-exhaustive list):
+    - **occurrences:** 31
+    - **regex:** `1\..*If .*, .*; otherwise .*`
+    - **references (examples, non-exhaustive list):**
         - IsPropertyReference ([link](https://tc39.es/ecma262/#sec-ispropertyreference))
             - `If _V_.[[Base]] is an Environment Record, return *false*; otherwise return *true*.`
     b. `If cond, thenStep; otherwise, elseStep`
-    - occurrences: 28
-    - regex: `1\..*If .*, .*; otherwise,.*`
-    - references (examples, non-exhaustive list):
+    - **occurrences:** 28
+    - **regex:** `1\..*If .*, .*; otherwise,.*`
+    - **references (examples, non-exhaustive list):**
         - SameValueNonNumber ([link](https://tc39.es/ecma262/#sec-samevaluenonnumber))
             - `If _x_ and _y_ have the same length and the same code units in the same positions, return *true*; otherwise, return *false*.`
-3. If, else in different steps:
+3. **If-Else in Different Steps:**
     ```markdown
         If cond, thenStep
         Else, elseStep
     ``` 
-    - occurrences: 62
-    - regex: `1\..*If .*, .*\n\s+1\..*Else, .*`
-    - references (examples, non-exhaustive list):
+    - **occurrences:** 62
+    - **regex:** `1\..*If .*, .*\n\s+1\..*Else, .*`
+    - **references (examples, non-exhaustive list):**
         - ReturnIfAbrupt ([link](https://tc39.es/ecma262/#sec-returnifabrupt))
             ```
             1. If _argument_ is an abrupt completion, return Completion(_argument_).
@@ -100,20 +102,17 @@ Conditional steps including a non-empty else step, for which neither then nor el
             ```
 
 I suggest the following updates to the spec:
-- Enforce only one keyword between `else` and `otherwise` - ie. choose only one notation between 1 and 2.
-- Enforce whether or not to use the comma after the `otherwise` keyword (notation 1 and 2).
-- Enforce a style for specifying if-then-else steps that don't require then/else blocks (either notation 1/2, or notation 3).
+- Enforce the use of only one keyword between `else` and `otherwise` (i.e., choose either notation 1 or 2).
+- Standardize whether or not to use a comma after the `otherwise` keyword (notation 2).
+- Enforce a consistent style for specifying if-then-else steps that do not require then/else blocks (choose between notation 1/2 or notation 3).
 
-## Algorithms represented as tables
+## Algorithms Represented as Tables
 
-### Description of the issue
+### Description of the Issue
 
-Some algorithms in the specification are defined in terms of tables surrounded by an `emu-table` tag. This is problematic as ESMeta doesn't currently parse algorithms specified by using tables.
+Some algorithms in the specification are defined using tables surrounded by an `emu-table` tag. This is problematic because ESMeta does not currently parse algorithms specified in this format.
 
-I suggest to turn those occurrences into algorithms defined in terms of steps surrounded by an `emu-alg` tag.
-
-### Occurrences to be updated
-
+I suggest to convert these occurrences into algorithms defined as steps surrounded by an `emu-alg` tag:
 - ToObject ([link](https://tc39.es/ecma262/#sec-toobject))
 - RequireObjectCoercible ([link](https://tc39.es/ecma262/#sec-requireobjectcoercible))
 
@@ -128,3 +127,5 @@ Set fields of realmRec.[[Intrinsics]] with the values listed in Table 6. The fie
 ```
 
 As a consequence, it's not parsed by ESMeta.
+
+I suggest to break this step into smaller, more manageable steps to improve readability and facilitate parsing by ESMeta.
