@@ -2,13 +2,11 @@
 
 ## Introduction
 
-We refer to the 2024 version of the specification.
+The aim of this document is to highlight parts of the ECMA-262 specification which use different notations (ie. syntaxes) to specify the exact same semantics. In addition, I suggest solutions to address those issues, so as to improve the overall quality of the ECMA-262 specification in terms of consistency.
 
-! Add a link to each algorithm.
+We refer to the specification available at https://tc39.es/ecma262, as of 28th June 2025.
 
-Different notations (syntax) used to specify the exact same semantics.
-
-This document is structured as follows: each main section starts with an explanation of the issue and the proposed solution. Then, I provide a list of occurences in the specification as a quick reference.
+The rest of this document is structured into sections, each one describing a list of notations used to express the same semantics. For each notation, I provide the number of occurrences in the corpus, the regular expression used to find those occurrences, and some examples of the occurrence in the specification. Lastly, I suggest a suitable solution to address the issue.
 
 ## Object field references
 
@@ -16,17 +14,41 @@ This document is structured as follows: each main section starts with an explana
 
 Referencing a field of an object is specified using different notations:
 1. `the value of _ref_.[[Property]]`
-    - occurrences: 2
+    - occurrences: 3
     - regex: `1\..*the value of _.*_\..*`
+    - references:
+        - InitializeInstanceElements ([link](https://tc39.es/ecma262/#sec-initializeinstanceelements))
+            - `Let _methods_ be the value of _constructor_.[[PrivateMethods]].`
+            - `Let _fields_ be the value of _constructor_.[[Fields]].`
+        - Function.prototype.toString ([link](https://tc39.es/ecma262/#sec-function.prototype.tostring))
+            - `If _func_ is a <emu-xref href="#sec-built-in-function-objects">built-in function object</emu-xref>, return an implementation-defined String source code representation of _func_. The representation must have the syntax of a |NativeFunction|. Additionally, if _func_ has an [[InitialName]] internal slot and _func_.[[InitialName]] is a String, the portion of the returned String that would be matched by |NativeFunctionAccessor?| |PropertyName| must be the value of _func_.[[InitialName]].`
 2. `the value of _ref_'s [[Property]] attribute`
     - occurrences: 6
     - regex: `1\..*the value of.*'s .* attribute.*`
+    - references:
+        - OrdinaryGetOwnProperty ([link](https://tc39.es/ecma262/#sec-ordinarygetownproperty))
+            - `Set _D_.[[Value]] to the value of _X_'s [[Value]] attribute.`
+            - `Set _D_.[[Writable]] to the value of _X_'s [[Writable]] attribute.`
+            - `Set _D_.[[Get]] to the value of _X_'s [[Get]] attribute.`
+            - `Set _D_.[[Set]] to the value of _X_'s [[Set]] attribute.`
+            - `Set _D_.[[Enumerable]] to the value of _X_'s [[Enumerable]] attribute.`
+            - `Set _D_.[[Configurable]] to the value of _X_'s [[Configurable]] attribute.`
 3. `_ref_'s [[Property]] value`
-    - occurrences: ???
+    - occurrences: 2
     - regex: `1\..*'s [^\s]+ value.*`
+    - references:
+        - SetFunctionName ([link](https://tc39.es/ecma262/#sec-setfunctionname))
+            - `Let _description_ be _name_'s [[Description]] value.`
+        - SymbolDescriptiveString ([link](https://tc39.es/ecma262/#sec-symboldescriptivestring))
+            - `Let _desc_ be _sym_'s [[Description]] value.`
 4. `_ref_.[[Property]]` 
     - occurrences: 1775 
     - regex: `1\..*_.*_\.[^s]+.*`
+    - references (examples, non-exhaustive list):
+        - SetFunctionName ([link](https://tc39.es/ecma262/#sec-setfunctionname))
+            - `Set _name_ to _name_.[[Description]].`
+            - `Set _F_.[[InitialName]] to _name_.`
+            - `Optionally, set _F_.[[InitialName]] to _name_.`
 
 As all notations imply the same semantics, I suggest to update the specification so that only notation 4 is used.
 
@@ -36,175 +58,73 @@ As all notations imply the same semantics, I suggest to update the specification
 | 2        | Set _D_.[[Value]] to the value of _X_'s [[Value]] attribute.            | Set _D_.[[Value]] to _X_.[[Value]].   |
 | 3        | Let _description_ be _name_'s [[Description]] value.                    | Let _description_ be _name_.[[Description]]. |
 
-
-### Description of the issue
-
-
-
-
 ## If-then-else Steps with single if/else Step
 
 ### Description of the issue
 
-Conditional steps including a non-empty else step, for which neither then nor else steps are blocks, are specified using different notations:
-1. If, else in the same step ("else" keyword): 
-    - If `cond`, `thenStep`; else `elseStep`
+Conditional steps including a non-empty else step, for which neither then nor else steps are blocks, are specified using different notations. Notice also that in notation 2 the `otherwise` keyword is occasionally followed by a comma:
+
+1. If, else in the same step ("else" keyword), with optional else-if: 
+    - `If cond, thenStep[; else if otherCond, otherThenStep]*; else elseStep`
+        - occurrences: 67
+        - regex: `1\..*[iI]f .*, .*(; else if .*, .*)*; else .*`
+        - references (examples, non-exhaustive list):
+            - ValidateAndApplyPropertyDescriptor ([link](https://tc39.es/ecma262/#sec-validateandapplypropertydescriptor))
+                - `If _Desc_ has a [[Configurable]] field, let _configurable_ be _Desc_.[[Configurable]]; else let _configurable_ be _current_.[[Configurable]].`
 2. If, else in the same step ("otherwise" keyword):
     
-    a. If `cond`, `thenStep`; otherwise `elseStep`
-
-    b. If `cond`, `thenStep`; otherwise, `elseStep`
+    a. `If cond, thenStep; otherwise elseStep`
+    - occurrences: 31
+    - regex: `1\..*If .*, .*; otherwise .*`
+    - references (examples, non-exhaustive list):
+        - IsPropertyReference ([link](https://tc39.es/ecma262/#sec-ispropertyreference))
+            - `If _V_.[[Base]] is an Environment Record, return *false*; otherwise return *true*.`
+    b. `If cond, thenStep; otherwise, elseStep`
+    - occurrences: 28
+    - regex: `1\..*If .*, .*; otherwise,.*`
+    - references (examples, non-exhaustive list):
+        - SameValueNonNumber ([link](https://tc39.es/ecma262/#sec-samevaluenonnumber))
+            - `If _x_ and _y_ have the same length and the same code units in the same positions, return *true*; otherwise, return *false*.`
 3. If, else in different steps:
-    - If `cond`, `thenStep`
-        
-        a. Else, `elseStep`
-        
-        b. Else `elseStep`
-
-Notice also that in notation 2 and 3 the Else and otherwise keywords are respectively and occasionally followed by a comma.
-
-In the considered version of the spec, there are:
-- 67 occurrencies of notation 1, 
-- 66 occurrencies of notation 2 (of which 34 have comma, and 32 don't)
-- difficult to estimate the number of occurrence of notation 3 since the spec also includes if/else _blocks_
+    ```markdown
+        If cond, thenStep
+        Else, elseStep
+    ``` 
+    - occurrences: 62
+    - regex: `1\..*If .*, .*\n\s+1\..*Else, .*`
+    - references (examples, non-exhaustive list):
+        - ReturnIfAbrupt ([link](https://tc39.es/ecma262/#sec-returnifabrupt))
+            ```
+            1. If _argument_ is an abrupt completion, return Completion(_argument_).
+            1. Else, set _argument_ to _argument_.[[Value]].
+            ```
 
 I suggest the following updates to the spec:
-- Enforce only one keyword between "else" and "otherwise".
-- Enforce whether or not to use the comma after the "else" or the "otherwise" keyword.
+- Enforce only one keyword between `else` and `otherwise` - ie. choose only one notation between 1 and 2.
+- Enforce whether or not to use the comma after the `otherwise` keyword (notation 1 and 2).
 - Enforce a style for specifying if-then-else steps that don't require then/else blocks (either notation 1/2, or notation 3).
 
-### Occurrences to be updated
-
-! No need to list all the occurrences, just provide the regex.
-
-## ToObject specification
+## Algorithms represented as tables
 
 ### Description of the issue
 
-! RequireObjectCoercible same issue.
+Some algorithms in the specification are defined in terms of tables surrounded by an `emu-table` tag. This is problematic as ESMeta doesn't currently parse algorithms specified by using tables.
 
-All other conversion in section `Type Conversions` are defined as `emu-alg` (ie. algorithm steps). `ToObject` is instead defined using a table.
+I suggest to turn those occurrences into algorithms defined in terms of steps surrounded by an `emu-alg` tag.
 
-I suggest to turn `ToObject` to an `emu-alg` specification.
+### Occurrences to be updated
 
-! ESMeta doesn't parse this algorithm.
+- ToObject ([link](https://tc39.es/ecma262/#sec-toobject))
+- RequireObjectCoercible ([link](https://tc39.es/ecma262/#sec-requireobjectcoercible))
 
 ## CreateIntrinsics
 
 ### Description of the issue
 
-It contains a step with a huge description. Maybe turn it to a note.
+The following step in the CreateIntrinsics ([link](https://tc39.es/ecma262/#sec-createintrinsics)) abstract operation is remarkably large:
 
-! Mention that ESMeta currently doesn't parse that step.
+```markdown
+Set fields of realmRec.[[Intrinsics]] with the values listed in Table 6. The field names are the names listed in column one of the table. The value of each field is a new object value fully and recursively populated with property values as defined by the specification of each object in clauses 19 through 28. All object property values are newly created object values. All values that are built-in function objects are created by performing CreateBuiltinFunction(steps, length, name, slots, realmRec, prototype) where steps is the definition of that function provided by this specification, name is the initial value of the function's "name" property, length is the initial value of the function's "length" property, slots is a list of the names, if any, of the function's specified internal slots, and prototype is the specified value of the function's [[Prototype]] internal slot. The creation of the intrinsics and their properties must be ordered to avoid any dependencies upon objects that have not yet been created.
+```
 
-## Returning completion records vs unboxed values
-
-### Description of the issue
-
-According to the specification of "Ordinary Object Internal Methods and Internal Slots": 
-- _"Each ordinary object internal method delegates to a similarly-named abstract operation."_
-
-However:
-- every internal method returns a normal completion
-- some abstract operations only return values
-- the internal method doesn't explicitly specify the wrapping in a completion record
-
-For instance:
-- The specification of [[GetPrototypeOf]]() states it must return "a normal completion containing either an Object or *null*" and delegates to OrdinaryGetPrototypeOf()
-- The specification of OrdinaryGetPrototypeOf() states it must return "an Object or *null*"
-
-! Whenever returning a normal completion is specified, enforce it by wrapping the value in `NormalCompletion()`.
-
----
-
-? i can mention the regexes used to compute the statistics
-
----
-
-### Occurrences to be updated
-
-1. Let `var` be the value of ...
-    - InitializeInstanceElements
-        - Let _methods_ be the value of _constructor_.[[PrivateMethods]].
-        - Let _fields_ be the value of _constructor_.[[Fields]].
-    > The occurrences mentioned below are mentioned for completeness, even though their updating is unlikely to be feasible. 
-    - ArrayBufferByteLength
-        - Let _isLittleEndian_ be the value of the [[LittleEndian]] field of the surrounding agent's Agent Record.
-    - GetModifySetValueInBuffer
-        - Let _isLittleEndian_ be the value of the [[LittleEndian]] field of the surrounding agent's Agent Record.
-    - HostGrowSharedArrayBuffer
-        - Let _isLittleEndian_ be the value of the [[LittleEndian]] field of the surrounding agent's Agent Record. If the abstract operation completes normally with ~handled~, a WriteSharedMemory or ReadModifyWriteSharedMemory event whose [[Order]] is ~seq-cst~, [[Payload]] is NumericToRawBytes(~biguint64~, _newByteLength_, _isLittleEndian_), [[Block]] is _buffer_.[[ArrayBufferByteLengthData]], [[ByteIndex]] is 0, and [[ElementSize]] is 8 is added to the surrounding agent's candidate execution such that racing calls to `SharedArrayBuffer.prototype.grow` are not "lost", i.e. silently do nothing.
-    - SharedArrayBuffer.prototype.grow
-        - Let _isLittleEndian_ be the value of the [[LittleEndian]] field of the surrounding agent's Agent Record.
-    - Atomics.add
-        - Let _isLittleEndian_ be the value of the [[LittleEndian]] field of the surrounding agent's Agent Record.
-    - Atomics.compareExchange
-        - Let _isLittleEndian_ be the value of the [[LittleEndian]] field of the surrounding agent's Agent Record.
-    - Atomics.sub
-        - Let _isLittleEndian_ be the value of the [[LittleEndian]] field of the surrounding agent's Agent Record.
-    - GeneratorYield
-        - Let _generator_ be the value of the Generator component of _genContext_.
-    - AsyncGeneratorYield
-        - Let _generator_ be the value of the Generator component of _genContext_.
-
-2. Let `var` be `ref`'s `field` value
-    - SetFunctionName
-        - Let _description_ be _name_'s [[Description]] value.
-    - SymbolDescriptiveString
-        - Let _desc_ be _sym_'s [[Description]] value.
---- regex: `1\..*_.*_'s .* value.*`
-
--- BELOW STEPS NEED NOT TO BE UPDATED.
-
-3. Let `var` be `ref`.`field`
-    > The list is incomplete due to the high number of occurrences in the spec.
-    - GetValue
-        - Let _base_ be _V_.[[Base]].
-    - PutValue
-        - Let _base_ be _V_.[[Base]].
-    - IsArray
-        - Let _proxyTarget_ be _argument_.[[ProxyTarget]].
-    - Set
-        - Let _success_ be ? <emu-meta effects="user-code">_O_.[[Set]]</emu-meta>(_P_, _V_, _O_).
-    - DefinePropertyOrThrow
-        - Let _success_ be ? <emu-meta effects="user-code">_O_.[[DefineOwnProperty]]</emu-meta>(_P_, _desc_).
-    - DeletePropertyOrThrow
-        - Let _success_ be ? <emu-meta effects="user-code">_O_.[[Delete]]</emu-meta>(_P_).
-    - HasOwnProperty
-        - Let _desc_ be ? <emu-meta effects="user-code">_O_.[[GetOwnProperty]]</emu-meta>(_P_).
-    - SetIntegrityLevel
-        - Let _status_ be ? _O_.[[PreventExtensions]]().
-        - Let _keys_ be ? _O_.[[OwnPropertyKeys]]().
-        - Let _currentDesc_ be ? <emu-meta effects="user-code">_O_.[[GetOwnProperty]]</emu-meta>(_k_).
-    - TestIntegrityLevel
-        - Let _keys_ be ? _O_.[[OwnPropertyKeys]]().
-        - Let _currentDesc_ be ? <emu-meta effects="user-code">_O_.[[GetOwnProperty]]</emu-meta>(_k_).
-    - OrdinaryHasInstance
-        - Let _BC_ be _C_.[[BoundTargetFunction]].
-    - EnumerableOwnProperties
-        - Let _ownKeys_ be ? <emu-meta effects="user-code">_O_.[[OwnPropertyKeys]]</emu-meta>().
-        - Let _desc_ be ? <emu-meta effects="user-code">_O_.[[GetOwnProperty]]</emu-meta>(_key_).
-    - GetFunctionRealm
-        - Let _boundTargetFunction_ be _obj_.[[BoundTargetFunction]].
-        - Let _proxyTarget_ be _obj_.[[ProxyTarget]].
-    - CopyDataProperties
-        - Let _keys_ be ? <emu-meta effects="user-code">_from_.[[OwnPropertyKeys]]</emu-meta>().
-        - Let _desc_ be ? <emu-meta effects="user-code">_from_.[[GetOwnProperty]]</emu-meta>(_nextKey_).
-    - PrivateMethodOrAccessorAdd
-        - Let _entry_ be PrivateElementFind(_O_, _method_.[[Key]]).
-    - PrivateGet
-        - Let _getter_ be _entry_.[[Get]].
-    - PrivateSet
-        - Let _setter_ be _entry_.[[Set]].
-    - DefineField
-        - Let _fieldName_ be _fieldRecord_.[[Name]].
-        - Let _initializer_ be _fieldRecord_.[[Initializer]].
-    - InitializeInstanceElements
-        - Let _methods_ be the value of _constructor_.[[PrivateMethods]].
-        - Let _fields_ be the value of _constructor_.[[Fields]].
-
-1. Set `ref` to **the value of** ...
-    - OrdinaryGetOwnProperty
-    - ValidateAndApplyPropertyDescriptor
-    - GetValueFromBuffer
-    - SetValueInBuffer
+As a consequence, it's not parsed by ESMeta.
