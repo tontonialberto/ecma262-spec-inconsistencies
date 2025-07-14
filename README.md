@@ -89,6 +89,7 @@ Conditional steps that include a non-empty else step, where neither the then nor
     - **references (examples, non-exhaustive list):**
         - IsPropertyReference ([link](https://tc39.es/ecma262/#sec-ispropertyreference))
             - `If _V_.[[Base]] is an Environment Record, return *false*; otherwise return *true*.`
+    
     b. `If cond, thenStep; otherwise, elseStep`
     - **occurrences:** 28
     - **regex:** `1\..*If .*, .*; otherwise,.*`
