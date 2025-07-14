@@ -15,7 +15,7 @@ The rest of this document is structured into sections, each describing a set of 
 Referencing a field of an object is expressed using different notations:
 
 1. `the value of _ref_.[[Property]]`
-    - **occurrences**: 3
+    - **occurrences**: 7
     - **regex**: `1\..*the value of _.*_\..*`
     - **references**:
         - InitializeInstanceElements ([link](https://tc39.es/ecma262/#sec-initializeinstanceelements))
@@ -23,6 +23,14 @@ Referencing a field of an object is expressed using different notations:
             - `Let _fields_ be the value of _constructor_.[[Fields]].`
         - Function.prototype.toString ([link](https://tc39.es/ecma262/#sec-function.prototype.tostring))
             - `If _func_ is a <emu-xref href="#sec-built-in-function-objects">built-in function object</emu-xref>, return an implementation-defined String source code representation of _func_. The representation must have the syntax of a |NativeFunction|. Additionally, if _func_ has an [[InitialName]] internal slot and _func_.[[InitialName]] is a String, the portion of the returned String that would be matched by |NativeFunctionAccessor?| |PropertyName| must be the value of _func_.[[InitialName]].`
+        - FulfillPromise ([link](https://tc39.es/ecma262/#sec-fulfillpromise))
+            - `Assert: The value of _promise_.[[PromiseState]] is ~pending~.`
+        - RejectPromise ([link](https://tc39.es/ecma262/#sec-rejectpromise))
+            - `Assert: The value of _promise_.[[PromiseState]] is ~pending~.`
+        - PerformPromiseThen ([link](https://tc39.es/ecma262/#sec-performpromisethen))
+            - `Assert: The value of _promise_.[[PromiseState]] is ~rejected~.`
+        - GeneratorStart ([link](https://tc39.es/ecma262/#sec-generatorstart))
+            - `Assert: The value of _generator_.[[GeneratorState]] is ~suspended-start~.`
 2. `the value of _ref_'s [[Property]] attribute`
     - **occurrences**: 6
     - **regex**: `1\..*the value of.*'s .* attribute.*`
