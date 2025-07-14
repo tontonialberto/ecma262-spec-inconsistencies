@@ -6,8 +6,8 @@
 
 ## Summary
 
-- **Total sections with matches:** 26
-- **Total matches found:** 30
+- **Total sections with matches:** 27
+- **Total matches found:** 31
 
 ## Results
 
