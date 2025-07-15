@@ -54,7 +54,7 @@ Since all notations imply the same semantics, I suggest updating the specificati
 ### Description of the Issue
 
 
-Conditional steps that include a non-empty else step, where neither the then nor else steps are blocks, are expressed using different notations. Additionally, in notation 2, the `otherwise` keyword is sometimes followed by a comma.
+Conditional steps that include a non-empty else step, where neither the then nor else steps are blocks, are expressed using different notations. Additionally, steps that make use of the `otherwise` keyword (instead of `else`) are expressed using several different notations.
 
 1. **If-Else in the Same Step ("else" keyword), with Optional Else-If:**
     - `If cond, thenStep[; else if otherCond, otherThenStep]*; else elseStep`
