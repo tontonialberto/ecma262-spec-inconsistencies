@@ -75,6 +75,19 @@ Conditional steps that include a non-empty else step, where neither the then nor
         - SameValueNonNumber ([link](https://tc39.es/ecma262/#sec-samevaluenonnumber))
             - `If _x_ and _y_ have the same length and the same code units in the same positions, return *true*; otherwise, return *false*.`
     - **extensive report**: [available here](./occurrences/ifelse-same-step-otherwise-comma.md)
+
+    c. `If cond, thenStep. Otherwise elseStep`
+    - **examples**:
+        - Set.prototype.symmetricDifference ([link](https://tc39.es/ecma262/#sec-set.prototype.symmetricdifference))
+            - `1. If _resultIndex_ is ~not-found~, let _alreadyInResult_ be *false*. Otherwise let _alreadyInResult_ be *true*.`
+    - **extensive report**: [available here](./occurrences/ifelse-same-step-otherwise-capital.md)
+    
+    d. `If cond, thenStep. Otherwise, elseStep`
+    - **examples**:
+        - Number::exponentiate ([link](https://tc39.es/ecma262/#sec-numeric-types-number-exponentiate))
+            - `1. If _exponent_ > *+0*𝔽, return *+∞*𝔽. Otherwise, return *+0*𝔽.`
+    - **extensive report**: [available here](./occurrences/ifelse-same-step-otherwise-capital-comma.md)
+
 3. **If-Else in Different Steps:**
     ```markdown
         If cond, thenStep
@@ -89,8 +102,7 @@ Conditional steps that include a non-empty else step, where neither the then nor
     - **extensive report**: [available here](./occurrences/ifelse-separate-step.md)
 
 I suggest the following updates to the spec:
-- Enforce the use of only one keyword between `else` and `otherwise` (i.e., choose either notation 1 or 2).
-- Standardize whether or not to use a comma after the `otherwise` keyword (notation 2).
+- Enforce the use `else` over `otherwise`, as the latter has many inconstistent notations and appears less frequently than the `else` keyword in the specification text.
 - Enforce a consistent style for specifying if-then-else steps that do not require then/else blocks (choose between notation 1/2 or notation 3).
 
 ## Algorithms Represented as Tables
