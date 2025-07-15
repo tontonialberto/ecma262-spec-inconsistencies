@@ -6,7 +6,7 @@ The purpose of this document is to highlight parts of the ECMA-262 specification
 
 This document refers to the specification available at https://tc39.es/ecma262, as of June 28, 2025.
 
-The rest of this document is structured into sections, each describing a set of notations used to express the same semantics. For each notation, I provide the number of occurrences in the corpus, the regular expression used to identify those occurrences, and examples from the specification. Finally, I suggest a suitable solution to address the issue.
+The rest of this document is structured into sections, each describing a set of notations used to express the same semantics. For each notation, I provide the some examples from the specification, and a link to an extensive report; each report includes a reference to every occurence in the specification text, the total number of occurrences, and the regular expression used to identify those occurrences from the `spec.html` file of ECMA-262, and examples from the specification. Finally, I suggest a suitable solution to address the issue.
 
 ## Object Field References
 
@@ -15,49 +15,31 @@ The rest of this document is structured into sections, each describing a set of 
 Referencing a field of an object is expressed using different notations:
 
 1. `the value of _ref_.[[Property]]`
-    - **occurrences**: 7
-    - **regex**: `1\..*the value of _.*_\..*`
-    - **references**:
+    - **examples**:
         - InitializeInstanceElements ([link](https://tc39.es/ecma262/#sec-initializeinstanceelements))
             - `Let _methods_ be the value of _constructor_.[[PrivateMethods]].`
-            - `Let _fields_ be the value of _constructor_.[[Fields]].`
-        - Function.prototype.toString ([link](https://tc39.es/ecma262/#sec-function.prototype.tostring))
-            - `If _func_ is a <emu-xref href="#sec-built-in-function-objects">built-in function object</emu-xref>, return an implementation-defined String source code representation of _func_. The representation must have the syntax of a |NativeFunction|. Additionally, if _func_ has an [[InitialName]] internal slot and _func_.[[InitialName]] is a String, the portion of the returned String that would be matched by |NativeFunctionAccessor?| |PropertyName| must be the value of _func_.[[InitialName]].`
         - FulfillPromise ([link](https://tc39.es/ecma262/#sec-fulfillpromise))
             - `Assert: The value of _promise_.[[PromiseState]] is ~pending~.`
-        - RejectPromise ([link](https://tc39.es/ecma262/#sec-rejectpromise))
-            - `Assert: The value of _promise_.[[PromiseState]] is ~pending~.`
-        - PerformPromiseThen ([link](https://tc39.es/ecma262/#sec-performpromisethen))
-            - `Assert: The value of _promise_.[[PromiseState]] is ~rejected~.`
-        - GeneratorStart ([link](https://tc39.es/ecma262/#sec-generatorstart))
-            - `Assert: The value of _generator_.[[GeneratorState]] is ~suspended-start~.`
+    - **extensive report**: [available here](./occurrences/property-thevalueof.md)
 2. `the value of _ref_'s [[Property]] attribute`
-    - **occurrences**: 6
-    - **regex**: `1\..*the value of.*'s .* attribute.*`
-    - **references**:
+    - **examples**:
         - OrdinaryGetOwnProperty ([link](https://tc39.es/ecma262/#sec-ordinarygetownproperty))
             - `Set _D_.[[Value]] to the value of _X_'s [[Value]] attribute.`
-            - `Set _D_.[[Writable]] to the value of _X_'s [[Writable]] attribute.`
-            - `Set _D_.[[Get]] to the value of _X_'s [[Get]] attribute.`
-            - `Set _D_.[[Set]] to the value of _X_'s [[Set]] attribute.`
-            - `Set _D_.[[Enumerable]] to the value of _X_'s [[Enumerable]] attribute.`
-            - `Set _D_.[[Configurable]] to the value of _X_'s [[Configurable]] attribute.`
+    - **extensive report**: [available here](./occurrences/property-thevalueof-attribute.md)
 3. `_ref_'s [[Property]] value`
-    - **occurrences**: 2
-    - **regex**: `1\..*'s [^\s]+ value.*`
-    - **references**:
+    - **examples**:
         - SetFunctionName ([link](https://tc39.es/ecma262/#sec-setfunctionname))
             - `Let _description_ be _name_'s [[Description]] value.`
-        - SymbolDescriptiveString ([link](https://tc39.es/ecma262/#sec-symboldescriptivestring))
-            - `Let _desc_ be _sym_'s [[Description]] value.`
+    - **extensive report**: [available here](./occurrences/property-genitive.md)
 4. `_ref_.[[Property]]` 
     - **occurrences**: 1775 
     - **regex**: `1\..*_.*_\.[^s]+.*`
-    - **references (examples, non-exhaustive list)**:
+    - **examples**:
         - SetFunctionName ([link](https://tc39.es/ecma262/#sec-setfunctionname))
             - `Set _name_ to _name_.[[Description]].`
             - `Set _F_.[[InitialName]] to _name_.`
             - `Optionally, set _F_.[[InitialName]] to _name_.`
+    - An extensive report is not provided here, as this seems to be the default notation in the spec.
 
 Since all notations imply the same semantics, I suggest updating the specification to use only notation 4.
 
@@ -76,39 +58,35 @@ Conditional steps that include a non-empty else step, where neither the then nor
 
 1. **If-Else in the Same Step ("else" keyword), with Optional Else-If:**
     - `If cond, thenStep[; else if otherCond, otherThenStep]*; else elseStep`
-        - **occurrences**: 67
-        - **regex**: `1\..*[iI]f .*, .*(; else if .*, .*)*; else .*`
-        - **references (examples, non-exhaustive list):**
+        - **examples**:
             - ValidateAndApplyPropertyDescriptor ([link](https://tc39.es/ecma262/#sec-validateandapplypropertydescriptor))
                 - `If _Desc_ has a [[Configurable]] field, let _configurable_ be _Desc_.[[Configurable]]; else let _configurable_ be _current_.[[Configurable]].`
+        - **extensive report**: [available here](./occurrences/ifelse-same-step.md)
 2. **If-Else in the Same Step ("otherwise" keyword):**
     
     a. `If cond, thenStep; otherwise elseStep`
-    - **occurrences:** 31
-    - **regex:** `1\..*If .*, .*; otherwise .*`
-    - **references (examples, non-exhaustive list):**
+    - **examples**:
         - IsPropertyReference ([link](https://tc39.es/ecma262/#sec-ispropertyreference))
             - `If _V_.[[Base]] is an Environment Record, return *false*; otherwise return *true*.`
+    - **extensive report**: [available here](./occurrences/ifelse-same-step-otherwise.md)
     
     b. `If cond, thenStep; otherwise, elseStep`
-    - **occurrences:** 28
-    - **regex:** `1\..*If .*, .*; otherwise,.*`
-    - **references (examples, non-exhaustive list):**
+    - **examples**:
         - SameValueNonNumber ([link](https://tc39.es/ecma262/#sec-samevaluenonnumber))
             - `If _x_ and _y_ have the same length and the same code units in the same positions, return *true*; otherwise, return *false*.`
+    - **extensive report**: [available here](./occurrences/ifelse-same-step-otherwise-comma.md)
 3. **If-Else in Different Steps:**
     ```markdown
         If cond, thenStep
         Else, elseStep
     ``` 
-    - **occurrences:** 62
-    - **regex:** `1\..*If .*, .*\n\s+1\..*Else, .*`
-    - **references (examples, non-exhaustive list):**
+    - **examples**:
         - ReturnIfAbrupt ([link](https://tc39.es/ecma262/#sec-returnifabrupt))
             ```
             1. If _argument_ is an abrupt completion, return Completion(_argument_).
             1. Else, set _argument_ to _argument_.[[Value]].
             ```
+    - **extensive report**: [available here](./occurrences/ifelse-separate-step.md)
 
 I suggest the following updates to the spec:
 - Enforce the use of only one keyword between `else` and `otherwise` (i.e., choose either notation 1 or 2).
