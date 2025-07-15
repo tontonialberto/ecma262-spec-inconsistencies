@@ -1,0 +1,27 @@
+{
+  "name": "ecma262-pattern-analysis",
+  "version": "1.0.0",
+  "description": "ECMA-262 Specification Pattern Analysis Tool",
+  "main": "dist/index.js",
+  "bin": {
+    "ecma262-analysis": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": ["ecma262", "specification", "pattern", "analysis"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "jsdom": "^22.1.0",
+    "@types/jsdom": "^21.1.0"
+  }
+}
